@@ -1,0 +1,134 @@
+Created by PLY version 3.4 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    LPARAN
+    BAR
+    RPARAN
+    ARROW
+
+Grammar
+
+Rule 0     S' -> expression
+Rule 1     expression -> LBRACKET expression RBRACKET
+Rule 2     expression -> NAME DASH NUMBER DASH NAME expression
+Rule 3     expression -> NAME DASH NUMBER DASH NAME
+
+Terminals, with rules where they appear
+
+ARROW                : 
+BAR                  : 
+DASH                 : 2 2 3 3
+LBRACKET             : 1
+LPARAN               : 
+NAME                 : 2 2 3 3
+NUMBER               : 2 3
+RBRACKET             : 1
+RPARAN               : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+expression           : 1 2 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . expression
+    (1) expression -> . LBRACKET expression RBRACKET
+    (2) expression -> . NAME DASH NUMBER DASH NAME expression
+    (3) expression -> . NAME DASH NUMBER DASH NAME
+
+    LBRACKET        shift and go to state 2
+    NAME            shift and go to state 1
+
+    expression                     shift and go to state 3
+
+state 1
+
+    (2) expression -> NAME . DASH NUMBER DASH NAME expression
+    (3) expression -> NAME . DASH NUMBER DASH NAME
+
+    DASH            shift and go to state 4
+
+
+state 2
+
+    (1) expression -> LBRACKET . expression RBRACKET
+    (1) expression -> . LBRACKET expression RBRACKET
+    (2) expression -> . NAME DASH NUMBER DASH NAME expression
+    (3) expression -> . NAME DASH NUMBER DASH NAME
+
+    LBRACKET        shift and go to state 2
+    NAME            shift and go to state 1
+
+    expression                     shift and go to state 5
+
+state 3
+
+    (0) S' -> expression .
+
+
+
+state 4
+
+    (2) expression -> NAME DASH . NUMBER DASH NAME expression
+    (3) expression -> NAME DASH . NUMBER DASH NAME
+
+    NUMBER          shift and go to state 6
+
+
+state 5
+
+    (1) expression -> LBRACKET expression . RBRACKET
+
+    RBRACKET        shift and go to state 7
+
+
+state 6
+
+    (2) expression -> NAME DASH NUMBER . DASH NAME expression
+    (3) expression -> NAME DASH NUMBER . DASH NAME
+
+    DASH            shift and go to state 8
+
+
+state 7
+
+    (1) expression -> LBRACKET expression RBRACKET .
+
+    RBRACKET        reduce using rule 1 (expression -> LBRACKET expression RBRACKET .)
+    $end            reduce using rule 1 (expression -> LBRACKET expression RBRACKET .)
+
+
+state 8
+
+    (2) expression -> NAME DASH NUMBER DASH . NAME expression
+    (3) expression -> NAME DASH NUMBER DASH . NAME
+
+    NAME            shift and go to state 9
+
+
+state 9
+
+    (2) expression -> NAME DASH NUMBER DASH NAME . expression
+    (3) expression -> NAME DASH NUMBER DASH NAME .
+    (1) expression -> . LBRACKET expression RBRACKET
+    (2) expression -> . NAME DASH NUMBER DASH NAME expression
+    (3) expression -> . NAME DASH NUMBER DASH NAME
+
+    RBRACKET        reduce using rule 3 (expression -> NAME DASH NUMBER DASH NAME .)
+    $end            reduce using rule 3 (expression -> NAME DASH NUMBER DASH NAME .)
+    LBRACKET        shift and go to state 2
+    NAME            shift and go to state 1
+
+    expression                     shift and go to state 10
+
+state 10
+
+    (2) expression -> NAME DASH NUMBER DASH NAME expression .
+
+    RBRACKET        reduce using rule 2 (expression -> NAME DASH NUMBER DASH NAME expression .)
+    $end            reduce using rule 2 (expression -> NAME DASH NUMBER DASH NAME expression .)
+

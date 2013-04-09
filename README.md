@@ -87,8 +87,9 @@ Intervals from being limited from what the language designer can think of!
 Imagine the possibilities: 
 1. A composer can "non-deterministically" choose notes based on the output of 
 the random module.
-2. He can select the appropriate key based on a http request to weather.com
-3. He can create music that
+2. He can select the appropriate key based on a http request to weather.com.
+3. He can write music that tempo is affected by the time of day.
+4. He can write music that responds to a user playing with GUI elements.
 
 ##Sweet Jesus, what do you mean Intervals is non-deterministic?
 It is not as scary as it sounds. Intervals allows the composer to describe
