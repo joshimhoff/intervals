@@ -1,134 +1,228 @@
 Created by PLY version 3.4 (http://www.dabeaz.com/ply)
 
-Unused terminals:
-
-    LPARAN
-    BAR
-    RPARAN
-    ARROW
-
 Grammar
 
-Rule 0     S' -> expression
-Rule 1     expression -> LBRACKET expression RBRACKET
-Rule 2     expression -> NAME DASH NUMBER DASH NAME expression
-Rule 3     expression -> NAME DASH NUMBER DASH NAME
+Rule 0     S' -> composition
+Rule 1     composition -> LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN bar
+Rule 2     composition -> LETTER NUMBER POST NUMBER bar
+Rule 3     composition -> bar
+Rule 4     bar -> LBRACKET notes RBRACKET
+Rule 5     notes -> pitch DASH duration notes
+Rule 6     notes -> pitch DASH duration
+Rule 7     pitch -> LETTER DASH NUMBER
+Rule 8     duration -> NUMBER
 
 Terminals, with rules where they appear
 
-ARROW                : 
-BAR                  : 
-DASH                 : 2 2 3 3
-LBRACKET             : 1
-LPARAN               : 
-NAME                 : 2 2 3 3
-NUMBER               : 2 3
-RBRACKET             : 1
-RPARAN               : 
+DASH                 : 5 6 7
+LBRACKET             : 4
+LETTER               : 1 2 7
+LPARAN               : 1
+NUMBER               : 1 1 1 2 2 7 8
+POST                 : 1 2
+RBRACKET             : 4
+RPARAN               : 1
 error                : 
 
 Nonterminals, with rules where they appear
 
-expression           : 1 2 0
+bar                  : 1 2 3
+composition          : 0
+duration             : 5 6
+notes                : 4 5
+pitch                : 5 6
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . expression
-    (1) expression -> . LBRACKET expression RBRACKET
-    (2) expression -> . NAME DASH NUMBER DASH NAME expression
-    (3) expression -> . NAME DASH NUMBER DASH NAME
+    (0) S' -> . composition
+    (1) composition -> . LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN bar
+    (2) composition -> . LETTER NUMBER POST NUMBER bar
+    (3) composition -> . bar
+    (4) bar -> . LBRACKET notes RBRACKET
 
+    LETTER          shift and go to state 3
     LBRACKET        shift and go to state 2
-    NAME            shift and go to state 1
 
-    expression                     shift and go to state 3
+    bar                            shift and go to state 1
+    composition                    shift and go to state 4
 
 state 1
 
-    (2) expression -> NAME . DASH NUMBER DASH NAME expression
-    (3) expression -> NAME . DASH NUMBER DASH NAME
+    (3) composition -> bar .
 
-    DASH            shift and go to state 4
+    $end            reduce using rule 3 (composition -> bar .)
 
 
 state 2
 
-    (1) expression -> LBRACKET . expression RBRACKET
-    (1) expression -> . LBRACKET expression RBRACKET
-    (2) expression -> . NAME DASH NUMBER DASH NAME expression
-    (3) expression -> . NAME DASH NUMBER DASH NAME
+    (4) bar -> LBRACKET . notes RBRACKET
+    (5) notes -> . pitch DASH duration notes
+    (6) notes -> . pitch DASH duration
+    (7) pitch -> . LETTER DASH NUMBER
 
-    LBRACKET        shift and go to state 2
-    NAME            shift and go to state 1
+    LETTER          shift and go to state 6
 
-    expression                     shift and go to state 5
+    notes                          shift and go to state 5
+    pitch                          shift and go to state 7
 
 state 3
 
-    (0) S' -> expression .
+    (1) composition -> LETTER . NUMBER POST NUMBER LPARAN NUMBER RPARAN bar
+    (2) composition -> LETTER . NUMBER POST NUMBER bar
 
+    NUMBER          shift and go to state 8
 
 
 state 4
 
-    (2) expression -> NAME DASH . NUMBER DASH NAME expression
-    (3) expression -> NAME DASH . NUMBER DASH NAME
+    (0) S' -> composition .
 
-    NUMBER          shift and go to state 6
 
 
 state 5
 
-    (1) expression -> LBRACKET expression . RBRACKET
+    (4) bar -> LBRACKET notes . RBRACKET
 
-    RBRACKET        shift and go to state 7
+    RBRACKET        shift and go to state 9
 
 
 state 6
 
-    (2) expression -> NAME DASH NUMBER . DASH NAME expression
-    (3) expression -> NAME DASH NUMBER . DASH NAME
+    (7) pitch -> LETTER . DASH NUMBER
 
-    DASH            shift and go to state 8
+    DASH            shift and go to state 10
 
 
 state 7
 
-    (1) expression -> LBRACKET expression RBRACKET .
+    (5) notes -> pitch . DASH duration notes
+    (6) notes -> pitch . DASH duration
 
-    RBRACKET        reduce using rule 1 (expression -> LBRACKET expression RBRACKET .)
-    $end            reduce using rule 1 (expression -> LBRACKET expression RBRACKET .)
+    DASH            shift and go to state 11
 
 
 state 8
 
-    (2) expression -> NAME DASH NUMBER DASH . NAME expression
-    (3) expression -> NAME DASH NUMBER DASH . NAME
+    (1) composition -> LETTER NUMBER . POST NUMBER LPARAN NUMBER RPARAN bar
+    (2) composition -> LETTER NUMBER . POST NUMBER bar
 
-    NAME            shift and go to state 9
+    POST            shift and go to state 12
 
 
 state 9
 
-    (2) expression -> NAME DASH NUMBER DASH NAME . expression
-    (3) expression -> NAME DASH NUMBER DASH NAME .
-    (1) expression -> . LBRACKET expression RBRACKET
-    (2) expression -> . NAME DASH NUMBER DASH NAME expression
-    (3) expression -> . NAME DASH NUMBER DASH NAME
+    (4) bar -> LBRACKET notes RBRACKET .
 
-    RBRACKET        reduce using rule 3 (expression -> NAME DASH NUMBER DASH NAME .)
-    $end            reduce using rule 3 (expression -> NAME DASH NUMBER DASH NAME .)
-    LBRACKET        shift and go to state 2
-    NAME            shift and go to state 1
+    $end            reduce using rule 4 (bar -> LBRACKET notes RBRACKET .)
 
-    expression                     shift and go to state 10
 
 state 10
 
-    (2) expression -> NAME DASH NUMBER DASH NAME expression .
+    (7) pitch -> LETTER DASH . NUMBER
 
-    RBRACKET        reduce using rule 2 (expression -> NAME DASH NUMBER DASH NAME expression .)
-    $end            reduce using rule 2 (expression -> NAME DASH NUMBER DASH NAME expression .)
+    NUMBER          shift and go to state 13
+
+
+state 11
+
+    (5) notes -> pitch DASH . duration notes
+    (6) notes -> pitch DASH . duration
+    (8) duration -> . NUMBER
+
+    NUMBER          shift and go to state 15
+
+    duration                       shift and go to state 14
+
+state 12
+
+    (1) composition -> LETTER NUMBER POST . NUMBER LPARAN NUMBER RPARAN bar
+    (2) composition -> LETTER NUMBER POST . NUMBER bar
+
+    NUMBER          shift and go to state 16
+
+
+state 13
+
+    (7) pitch -> LETTER DASH NUMBER .
+
+    DASH            reduce using rule 7 (pitch -> LETTER DASH NUMBER .)
+
+
+state 14
+
+    (5) notes -> pitch DASH duration . notes
+    (6) notes -> pitch DASH duration .
+    (5) notes -> . pitch DASH duration notes
+    (6) notes -> . pitch DASH duration
+    (7) pitch -> . LETTER DASH NUMBER
+
+    RBRACKET        reduce using rule 6 (notes -> pitch DASH duration .)
+    LETTER          shift and go to state 6
+
+    notes                          shift and go to state 17
+    pitch                          shift and go to state 7
+
+state 15
+
+    (8) duration -> NUMBER .
+
+    LETTER          reduce using rule 8 (duration -> NUMBER .)
+    RBRACKET        reduce using rule 8 (duration -> NUMBER .)
+
+
+state 16
+
+    (1) composition -> LETTER NUMBER POST NUMBER . LPARAN NUMBER RPARAN bar
+    (2) composition -> LETTER NUMBER POST NUMBER . bar
+    (4) bar -> . LBRACKET notes RBRACKET
+
+    LPARAN          shift and go to state 18
+    LBRACKET        shift and go to state 2
+
+    bar                            shift and go to state 19
+
+state 17
+
+    (5) notes -> pitch DASH duration notes .
+
+    RBRACKET        reduce using rule 5 (notes -> pitch DASH duration notes .)
+
+
+state 18
+
+    (1) composition -> LETTER NUMBER POST NUMBER LPARAN . NUMBER RPARAN bar
+
+    NUMBER          shift and go to state 20
+
+
+state 19
+
+    (2) composition -> LETTER NUMBER POST NUMBER bar .
+
+    $end            reduce using rule 2 (composition -> LETTER NUMBER POST NUMBER bar .)
+
+
+state 20
+
+    (1) composition -> LETTER NUMBER POST NUMBER LPARAN NUMBER . RPARAN bar
+
+    RPARAN          shift and go to state 21
+
+
+state 21
+
+    (1) composition -> LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN . bar
+    (4) bar -> . LBRACKET notes RBRACKET
+
+    LBRACKET        shift and go to state 2
+
+    bar                            shift and go to state 22
+
+state 22
+
+    (1) composition -> LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN bar .
+
+    $end            reduce using rule 1 (composition -> LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN bar .)
 

@@ -5,9 +5,9 @@ _tabversion = '3.2'
 
 _lr_method = 'LALR'
 
-_lr_signature = '\nQ\x07<\xe2\x11H\xed8\x16\x06\x931\xb0\xd4P'
+_lr_signature = '\xd9\xcbJ\x157\xa2\x93Lj~B@\x98\xd14\xe7'
     
-_lr_action_items = {'DASH':([1,6,],[4,8,]),'NAME':([0,2,8,9,],[1,1,9,1,]),'NUMBER':([4,],[6,]),'LBRACKET':([0,2,9,],[2,2,2,]),'RBRACKET':([5,7,9,10,],[7,-1,-3,-2,]),'$end':([3,7,9,10,],[0,-1,-3,-2,]),}
+_lr_action_items = {'DASH':([6,7,13,],[10,11,-7,]),'LPARAN':([16,],[18,]),'RPARAN':([20,],[21,]),'NUMBER':([3,10,11,12,18,],[8,13,15,16,20,]),'LBRACKET':([0,16,21,],[2,2,2,]),'LETTER':([0,2,14,15,],[3,6,6,-8,]),'RBRACKET':([5,14,15,17,],[9,-6,-8,-5,]),'POST':([8,],[12,]),'$end':([1,4,9,19,22,],[-3,0,-4,-2,-1,]),}
 
 _lr_action = { }
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,2,9,],[3,5,10,]),}
+_lr_goto_items = {'duration':([11,],[14,]),'notes':([2,14,],[5,17,]),'bar':([0,16,21,],[1,19,22,]),'composition':([0,],[4,]),'pitch':([2,14,],[7,7,]),}
 
 _lr_goto = { }
 for _k, _v in _lr_goto_items.items():
@@ -25,8 +25,13 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> expression","S'",1,None,None,None),
-  ('expression -> LBRACKET expression RBRACKET','expression',3,'p_expression_bar','parser.py',7),
-  ('expression -> NAME DASH NUMBER DASH NAME expression','expression',6,'p_expression_notes','parser.py',11),
-  ('expression -> NAME DASH NUMBER DASH NAME','expression',5,'p_expression_note','parser.py',16),
+  ("S' -> composition","S'",1,None,None,None),
+  ('composition -> LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN bar','composition',8,'p_compostion_bpm','parser.py',11),
+  ('composition -> LETTER NUMBER POST NUMBER bar','composition',5,'p_compostion_nobpm','parser.py',23),
+  ('composition -> bar','composition',1,'p_compostion_defaults','parser.py',33),
+  ('bar -> LBRACKET notes RBRACKET','bar',3,'p_bar_note','parser.py',39),
+  ('notes -> pitch DASH duration notes','notes',4,'p_notes_pitch_duration','parser.py',45),
+  ('notes -> pitch DASH duration','notes',3,'p_notes_pitch_duration','parser.py',46),
+  ('pitch -> LETTER DASH NUMBER','pitch',3,'p_note_terminals','parser.py',53),
+  ('duration -> NUMBER','duration',1,'p_duration_terminals','parser.py',57),
 ]
