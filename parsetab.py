@@ -5,9 +5,9 @@ _tabversion = '3.2'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'j\xf9~;\x0e|\xd5Mj\x01skyU|\xcd'
+_lr_signature = '\xb6{\xc5]_\xa5\x9f\x0b\xab\r\x97~\x01\xaas\xa3'
     
-_lr_action_items = {'DASH':([7,8,16,],[12,13,-9,]),'LPARAN':([19,],[21,]),'RPARAN':([22,],[23,]),'NUMBER':([4,12,13,14,21,],[9,16,18,19,22,]),'LBRACKET':([0,5,11,19,23,],[3,3,3,-4,-3,]),'LETTER':([0,3,17,18,],[4,7,7,-10,]),'RBRACKET':([6,17,18,20,],[11,-8,-10,-7,]),'POST':([9,],[14,]),'$end':([1,2,10,11,15,],[-2,0,-1,-6,-5,]),}
+_lr_action_items = {'DASH':([9,10,20,],[15,16,-13,]),'LPARAN':([3,19,24,],[8,8,27,]),'RPARAN':([14,21,22,26,28,],[19,-12,-14,-11,29,]),'NUMBER':([4,15,16,18,27,],[12,20,22,24,28,]),'LBRACKET':([0,5,17,24,29,],[3,3,3,-4,-3,]),'LETTER':([0,3,8,21,22,],[4,9,9,9,-14,]),'RBRACKET':([6,7,11,19,21,22,25,26,],[-8,-7,17,-10,-12,-14,-9,-11,]),'POST':([12,],[18,]),'$end':([1,2,13,17,23,],[-2,0,-1,-6,-5,]),}
 
 _lr_action = { }
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'bars':([0,5,11,],[1,10,15,]),'compostion':([0,],[2,]),'notes':([3,17,],[6,20,]),'pitch':([3,17,],[8,8,]),'duration':([13,],[17,]),'prelude':([0,],[5,]),}
+_lr_goto_items = {'bars':([0,5,17,],[1,13,23,]),'compostion':([0,],[2,]),'chords':([3,19,],[6,25,]),'notes':([3,8,21,],[7,14,26,]),'duration':([16,],[21,]),'pitch':([3,8,21,],[10,10,10,]),'units':([3,],[11,]),'prelude':([0,],[5,]),}
 
 _lr_goto = { }
 for _k, _v in _lr_goto_items.items():
@@ -30,10 +30,14 @@ _lr_productions = [
   ('compostion -> bars','compostion',1,'p_compostion','parser.py',12),
   ('prelude -> LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN','prelude',7,'p_prelude','parser.py',22),
   ('prelude -> LETTER NUMBER POST NUMBER','prelude',4,'p_prelude','parser.py',23),
-  ('bars -> LBRACKET notes RBRACKET bars','bars',4,'p_bars_notes','parser.py',34),
-  ('bars -> LBRACKET notes RBRACKET','bars',3,'p_bars_notes','parser.py',35),
-  ('notes -> pitch DASH duration notes','notes',4,'p_notes_pitch_duration','parser.py',47),
-  ('notes -> pitch DASH duration','notes',3,'p_notes_pitch_duration','parser.py',48),
-  ('pitch -> LETTER DASH NUMBER','pitch',3,'p_pitch_terminals','parser.py',56),
-  ('duration -> NUMBER','duration',1,'p_duration_terminals','parser.py',60),
+  ('bars -> LBRACKET units RBRACKET bars','bars',4,'p_bars_notes','parser.py',34),
+  ('bars -> LBRACKET units RBRACKET','bars',3,'p_bars_notes','parser.py',35),
+  ('units -> notes','units',1,'p_units_notes_chords','parser.py',47),
+  ('units -> chords','units',1,'p_units_notes_chords','parser.py',48),
+  ('chords -> LPARAN notes RPARAN chords','chords',4,'p_chords_notes','parser.py',52),
+  ('chords -> LPARAN notes RPARAN','chords',3,'p_chords_notes','parser.py',53),
+  ('notes -> pitch DASH duration notes','notes',4,'p_notes_pitch_duration','parser.py',65),
+  ('notes -> pitch DASH duration','notes',3,'p_notes_pitch_duration','parser.py',66),
+  ('pitch -> LETTER DASH NUMBER','pitch',3,'p_pitch_terminals','parser.py',74),
+  ('duration -> NUMBER','duration',1,'p_duration_terminals','parser.py',78),
 ]

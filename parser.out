@@ -7,33 +7,39 @@ Rule 1     compostion -> prelude bars
 Rule 2     compostion -> bars
 Rule 3     prelude -> LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN
 Rule 4     prelude -> LETTER NUMBER POST NUMBER
-Rule 5     bars -> LBRACKET notes RBRACKET bars
-Rule 6     bars -> LBRACKET notes RBRACKET
-Rule 7     notes -> pitch DASH duration notes
-Rule 8     notes -> pitch DASH duration
-Rule 9     pitch -> LETTER DASH NUMBER
-Rule 10    duration -> NUMBER
+Rule 5     bars -> LBRACKET units RBRACKET bars
+Rule 6     bars -> LBRACKET units RBRACKET
+Rule 7     units -> notes
+Rule 8     units -> chords
+Rule 9     chords -> LPARAN notes RPARAN chords
+Rule 10    chords -> LPARAN notes RPARAN
+Rule 11    notes -> pitch DASH duration notes
+Rule 12    notes -> pitch DASH duration
+Rule 13    pitch -> LETTER DASH NUMBER
+Rule 14    duration -> NUMBER
 
 Terminals, with rules where they appear
 
-DASH                 : 7 8 9
+DASH                 : 11 12 13
 LBRACKET             : 5 6
-LETTER               : 3 4 9
-LPARAN               : 3
-NUMBER               : 3 3 3 4 4 9 10
+LETTER               : 3 4 13
+LPARAN               : 3 9 10
+NUMBER               : 3 3 3 4 4 13 14
 POST                 : 3 4
 RBRACKET             : 5 6
-RPARAN               : 3
+RPARAN               : 3 9 10
 error                : 
 
 Nonterminals, with rules where they appear
 
 bars                 : 1 2 5
+chords               : 8 9
 compostion           : 0
-duration             : 7 8
-notes                : 5 6 7
-pitch                : 7 8
+duration             : 11 12
+notes                : 7 9 10 11
+pitch                : 11 12
 prelude              : 1
+units                : 5 6
 
 Parsing method: LALR
 
@@ -44,8 +50,8 @@ state 0
     (2) compostion -> . bars
     (3) prelude -> . LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN
     (4) prelude -> . LETTER NUMBER POST NUMBER
-    (5) bars -> . LBRACKET notes RBRACKET bars
-    (6) bars -> . LBRACKET notes RBRACKET
+    (5) bars -> . LBRACKET units RBRACKET bars
+    (6) bars -> . LBRACKET units RBRACKET
 
     LETTER          shift and go to state 4
     LBRACKET        shift and go to state 3
@@ -69,177 +75,241 @@ state 2
 
 state 3
 
-    (5) bars -> LBRACKET . notes RBRACKET bars
-    (6) bars -> LBRACKET . notes RBRACKET
-    (7) notes -> . pitch DASH duration notes
-    (8) notes -> . pitch DASH duration
-    (9) pitch -> . LETTER DASH NUMBER
+    (5) bars -> LBRACKET . units RBRACKET bars
+    (6) bars -> LBRACKET . units RBRACKET
+    (7) units -> . notes
+    (8) units -> . chords
+    (11) notes -> . pitch DASH duration notes
+    (12) notes -> . pitch DASH duration
+    (9) chords -> . LPARAN notes RPARAN chords
+    (10) chords -> . LPARAN notes RPARAN
+    (13) pitch -> . LETTER DASH NUMBER
 
-    LETTER          shift and go to state 7
+    LPARAN          shift and go to state 8
+    LETTER          shift and go to state 9
 
-    notes                          shift and go to state 6
-    pitch                          shift and go to state 8
+    chords                         shift and go to state 6
+    notes                          shift and go to state 7
+    pitch                          shift and go to state 10
+    units                          shift and go to state 11
 
 state 4
 
     (3) prelude -> LETTER . NUMBER POST NUMBER LPARAN NUMBER RPARAN
     (4) prelude -> LETTER . NUMBER POST NUMBER
 
-    NUMBER          shift and go to state 9
+    NUMBER          shift and go to state 12
 
 
 state 5
 
     (1) compostion -> prelude . bars
-    (5) bars -> . LBRACKET notes RBRACKET bars
-    (6) bars -> . LBRACKET notes RBRACKET
+    (5) bars -> . LBRACKET units RBRACKET bars
+    (6) bars -> . LBRACKET units RBRACKET
 
     LBRACKET        shift and go to state 3
 
-    bars                           shift and go to state 10
+    bars                           shift and go to state 13
 
 state 6
 
-    (5) bars -> LBRACKET notes . RBRACKET bars
-    (6) bars -> LBRACKET notes . RBRACKET
+    (8) units -> chords .
 
-    RBRACKET        shift and go to state 11
+    RBRACKET        reduce using rule 8 (units -> chords .)
 
 
 state 7
 
-    (9) pitch -> LETTER . DASH NUMBER
+    (7) units -> notes .
 
-    DASH            shift and go to state 12
+    RBRACKET        reduce using rule 7 (units -> notes .)
 
 
 state 8
 
-    (7) notes -> pitch . DASH duration notes
-    (8) notes -> pitch . DASH duration
+    (9) chords -> LPARAN . notes RPARAN chords
+    (10) chords -> LPARAN . notes RPARAN
+    (11) notes -> . pitch DASH duration notes
+    (12) notes -> . pitch DASH duration
+    (13) pitch -> . LETTER DASH NUMBER
 
-    DASH            shift and go to state 13
+    LETTER          shift and go to state 9
 
+    notes                          shift and go to state 14
+    pitch                          shift and go to state 10
 
 state 9
+
+    (13) pitch -> LETTER . DASH NUMBER
+
+    DASH            shift and go to state 15
+
+
+state 10
+
+    (11) notes -> pitch . DASH duration notes
+    (12) notes -> pitch . DASH duration
+
+    DASH            shift and go to state 16
+
+
+state 11
+
+    (5) bars -> LBRACKET units . RBRACKET bars
+    (6) bars -> LBRACKET units . RBRACKET
+
+    RBRACKET        shift and go to state 17
+
+
+state 12
 
     (3) prelude -> LETTER NUMBER . POST NUMBER LPARAN NUMBER RPARAN
     (4) prelude -> LETTER NUMBER . POST NUMBER
 
-    POST            shift and go to state 14
+    POST            shift and go to state 18
 
 
-state 10
+state 13
 
     (1) compostion -> prelude bars .
 
     $end            reduce using rule 1 (compostion -> prelude bars .)
 
 
-state 11
-
-    (5) bars -> LBRACKET notes RBRACKET . bars
-    (6) bars -> LBRACKET notes RBRACKET .
-    (5) bars -> . LBRACKET notes RBRACKET bars
-    (6) bars -> . LBRACKET notes RBRACKET
-
-    $end            reduce using rule 6 (bars -> LBRACKET notes RBRACKET .)
-    LBRACKET        shift and go to state 3
-
-    bars                           shift and go to state 15
-
-state 12
-
-    (9) pitch -> LETTER DASH . NUMBER
-
-    NUMBER          shift and go to state 16
-
-
-state 13
-
-    (7) notes -> pitch DASH . duration notes
-    (8) notes -> pitch DASH . duration
-    (10) duration -> . NUMBER
-
-    NUMBER          shift and go to state 18
-
-    duration                       shift and go to state 17
-
 state 14
 
-    (3) prelude -> LETTER NUMBER POST . NUMBER LPARAN NUMBER RPARAN
-    (4) prelude -> LETTER NUMBER POST . NUMBER
+    (9) chords -> LPARAN notes . RPARAN chords
+    (10) chords -> LPARAN notes . RPARAN
 
-    NUMBER          shift and go to state 19
+    RPARAN          shift and go to state 19
 
 
 state 15
 
-    (5) bars -> LBRACKET notes RBRACKET bars .
+    (13) pitch -> LETTER DASH . NUMBER
 
-    $end            reduce using rule 5 (bars -> LBRACKET notes RBRACKET bars .)
+    NUMBER          shift and go to state 20
 
 
 state 16
 
-    (9) pitch -> LETTER DASH NUMBER .
+    (11) notes -> pitch DASH . duration notes
+    (12) notes -> pitch DASH . duration
+    (14) duration -> . NUMBER
 
-    DASH            reduce using rule 9 (pitch -> LETTER DASH NUMBER .)
+    NUMBER          shift and go to state 22
 
+    duration                       shift and go to state 21
 
 state 17
 
-    (7) notes -> pitch DASH duration . notes
-    (8) notes -> pitch DASH duration .
-    (7) notes -> . pitch DASH duration notes
-    (8) notes -> . pitch DASH duration
-    (9) pitch -> . LETTER DASH NUMBER
+    (5) bars -> LBRACKET units RBRACKET . bars
+    (6) bars -> LBRACKET units RBRACKET .
+    (5) bars -> . LBRACKET units RBRACKET bars
+    (6) bars -> . LBRACKET units RBRACKET
 
-    RBRACKET        reduce using rule 8 (notes -> pitch DASH duration .)
-    LETTER          shift and go to state 7
+    $end            reduce using rule 6 (bars -> LBRACKET units RBRACKET .)
+    LBRACKET        shift and go to state 3
 
-    notes                          shift and go to state 20
-    pitch                          shift and go to state 8
+    bars                           shift and go to state 23
 
 state 18
 
-    (10) duration -> NUMBER .
+    (3) prelude -> LETTER NUMBER POST . NUMBER LPARAN NUMBER RPARAN
+    (4) prelude -> LETTER NUMBER POST . NUMBER
 
-    LETTER          reduce using rule 10 (duration -> NUMBER .)
-    RBRACKET        reduce using rule 10 (duration -> NUMBER .)
+    NUMBER          shift and go to state 24
 
 
 state 19
 
-    (3) prelude -> LETTER NUMBER POST NUMBER . LPARAN NUMBER RPARAN
-    (4) prelude -> LETTER NUMBER POST NUMBER .
+    (9) chords -> LPARAN notes RPARAN . chords
+    (10) chords -> LPARAN notes RPARAN .
+    (9) chords -> . LPARAN notes RPARAN chords
+    (10) chords -> . LPARAN notes RPARAN
 
-    LPARAN          shift and go to state 21
-    LBRACKET        reduce using rule 4 (prelude -> LETTER NUMBER POST NUMBER .)
+    RBRACKET        reduce using rule 10 (chords -> LPARAN notes RPARAN .)
+    LPARAN          shift and go to state 8
 
+    chords                         shift and go to state 25
 
 state 20
 
-    (7) notes -> pitch DASH duration notes .
+    (13) pitch -> LETTER DASH NUMBER .
 
-    RBRACKET        reduce using rule 7 (notes -> pitch DASH duration notes .)
+    DASH            reduce using rule 13 (pitch -> LETTER DASH NUMBER .)
 
 
 state 21
 
-    (3) prelude -> LETTER NUMBER POST NUMBER LPARAN . NUMBER RPARAN
+    (11) notes -> pitch DASH duration . notes
+    (12) notes -> pitch DASH duration .
+    (11) notes -> . pitch DASH duration notes
+    (12) notes -> . pitch DASH duration
+    (13) pitch -> . LETTER DASH NUMBER
 
-    NUMBER          shift and go to state 22
+    RBRACKET        reduce using rule 12 (notes -> pitch DASH duration .)
+    RPARAN          reduce using rule 12 (notes -> pitch DASH duration .)
+    LETTER          shift and go to state 9
 
+    notes                          shift and go to state 26
+    pitch                          shift and go to state 10
 
 state 22
 
-    (3) prelude -> LETTER NUMBER POST NUMBER LPARAN NUMBER . RPARAN
+    (14) duration -> NUMBER .
 
-    RPARAN          shift and go to state 23
+    LETTER          reduce using rule 14 (duration -> NUMBER .)
+    RBRACKET        reduce using rule 14 (duration -> NUMBER .)
+    RPARAN          reduce using rule 14 (duration -> NUMBER .)
 
 
 state 23
+
+    (5) bars -> LBRACKET units RBRACKET bars .
+
+    $end            reduce using rule 5 (bars -> LBRACKET units RBRACKET bars .)
+
+
+state 24
+
+    (3) prelude -> LETTER NUMBER POST NUMBER . LPARAN NUMBER RPARAN
+    (4) prelude -> LETTER NUMBER POST NUMBER .
+
+    LPARAN          shift and go to state 27
+    LBRACKET        reduce using rule 4 (prelude -> LETTER NUMBER POST NUMBER .)
+
+
+state 25
+
+    (9) chords -> LPARAN notes RPARAN chords .
+
+    RBRACKET        reduce using rule 9 (chords -> LPARAN notes RPARAN chords .)
+
+
+state 26
+
+    (11) notes -> pitch DASH duration notes .
+
+    RBRACKET        reduce using rule 11 (notes -> pitch DASH duration notes .)
+    RPARAN          reduce using rule 11 (notes -> pitch DASH duration notes .)
+
+
+state 27
+
+    (3) prelude -> LETTER NUMBER POST NUMBER LPARAN . NUMBER RPARAN
+
+    NUMBER          shift and go to state 28
+
+
+state 28
+
+    (3) prelude -> LETTER NUMBER POST NUMBER LPARAN NUMBER . RPARAN
+
+    RPARAN          shift and go to state 29
+
+
+state 29
 
     (3) prelude -> LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN .
 
