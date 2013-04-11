@@ -7,49 +7,52 @@ key = 'C'
 meter = (4,4)
 bpm = 120
 
-def p_compostion_bpm(t):
-    'composition : LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN bar'
+def p_compostion(t):
+    '''compostion : prelude bars
+                  | bars'''
+    if len(t) == 3:
+        barsIndex = 2
+    else:
+        barsIndex = 1
+    t[0] = Track()
+    for bar in reversed(t[barsIndex]):
+        t[0].add_bar(bar)
+
+def p_prelude(t):
+    '''prelude : LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN
+               | LETTER NUMBER POST NUMBER'''
     global key
     global meter
     global bpm
 
     key = t[1]
     meter = (int(t[2]),int(t[4]))
-    bpm = int(t[6])
-    t[0] = Track()
-    t[0].add_bar(t[8])
+    if len(t) == 8:
+        bpm = int(t[6])
 
-def p_compostion_nobpm(t):
-    'composition : LETTER NUMBER POST NUMBER bar'
-    global key
-    global meter
-
-    key = t[1]
-    meter = (int(t[2]),int(t[4]))
-    t[0] = Track()
-    t[0].add_bar(t[5])
-
-def p_compostion_defaults(t):
-    'composition : bar'
-    t[0] = Track()
-    t[0].add_bar(t[1])
-
-def p_bar_note(t):
-    'bar : LBRACKET notes RBRACKET'
-    t[0] = Bar(key,meter)
-    for note in reversed(t[2]):
-        t[0].place_notes(note[0],note[1])
+def p_bars_notes(t):
+    '''bars : LBRACKET notes RBRACKET bars
+            | LBRACKET notes RBRACKET'''
+    if len(t) == 4: # base case
+        t[0] = [Bar(key,meter)]
+        for note in reversed(t[2]):
+            t[0][0].place_notes(note[0],note[1])
+    else:
+        t[0] = t[4]
+        t[0].append(Bar(key,meter))
+        for note in reversed(t[2]):
+            t[0][len(t[0])-1].place_notes(note[0],note[1])
 
 def p_notes_pitch_duration(t):
     '''notes : pitch DASH duration notes
              | pitch DASH duration'''
-    if len(t) == 4:
+    if len(t) == 4: # base case
         t[0] = [[t[1],t[3]]]
     else:
         t[0] = t[4]
         t[0].append([t[1],t[3]])
 
-def p_note_terminals(t):
+def p_pitch_terminals(t):
     'pitch : LETTER DASH NUMBER'
     t[0] = Note(''.join(t[1:4]))
 
@@ -58,7 +61,7 @@ def p_duration_terminals(t):
     t[0] = int(t[1])
 
 def p_error(t):
-    print("Bad parse")
+    print("Syntax error")
 
 yacc.yacc()
 
@@ -72,5 +75,4 @@ if __name__ == '__main__':
         except EOFError:
             break
         result = yacc.parse(s)
-        print result
         fluidsynth.play_Track(result,1,bpm)
