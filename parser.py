@@ -3,12 +3,15 @@ import ply.yacc as yacc
 from mingus.midi import fluidsynth
 from mingus.containers import *
 
-#TODO
-#1. Basic chords
-#2. Variable duration chords
-#3. Variables
-#4. In-line Python
-#5. The composition block
+# TODO
+# Test key signature
+# Chord duration
+# Rests, sticato, dynamics, ties, etc.  
+# Multiple tracks
+# Composition blocks
+# Variables and method calls
+# In-line Python
+# Choice operator
 
 key = 'C'
 meter = (4,4)
@@ -26,7 +29,7 @@ def p_compostion(p):
         p[0].add_bar(bar)
 
 def p_prelude(p):
-    '''prelude : LETTER NUMBER POST NUMBER LPARAN NUMBER RPARAN
+    '''prelude : LETTER NUMBER POST NUMBER NUMBER
                | LETTER NUMBER POST NUMBER'''
     global key
     global meter
@@ -34,8 +37,8 @@ def p_prelude(p):
 
     key = p[1]
     meter = (int(p[2]),int(p[4]))
-    if len(p) == 8:
-        bpm = int(p[6])
+    if len(p) == 6:
+        bpm = int(p[5])
 
 def p_bars_notes(p):
     '''bars : LBRACKET units RBRACKET bars
@@ -47,35 +50,37 @@ def p_bars_notes(p):
     else:
         p[0] = p[4]
         p[0].append(Bar(key,meter))
-        for note in reversed(p[2]):
-            p[0][len(p[0])-1].place_notes(note[0],note[1])
+        for unit in reversed(p[2]):
+            p[0][len(p[0])-1].place_notes(unit[0],unit[1])
 
-def p_units_notes_chords(p):
-    '''units : notes
-             | chords'''
-    p[0] = p[1]
-
-def p_chords_notes(p):
-    '''chords : LPARAN notes RPARAN chords
-              | LPARAN notes RPARAN'''
-    if len(p) == 4: # base case
-        p[0] = [[NoteContainer(),p[2][0][1]]]
-        for note in reversed(p[2]):
-            p[0][0][0].add_note(note[0])
+def p_units_note_chords(p):
+    '''units : note units
+             | note
+             | chord units
+             | chord'''
+    if len(p) == 2:
+        p[0] = p[1]
     else:
-        p[0] = p[4]
-        p[0].append([NoteContainer(),p[2][0][1]])
-        for note in reversed(p[2]):
-            p[0][len(p[0])-1][0].add_note(note[0])
+        p[0] = p[2] + p[1]
 
-def p_notes_pitch_duration(p):
-    '''notes : pitch DASH duration notes
-             | pitch DASH duration'''
-    if len(p) == 4: # base case
-        p[0] = [[p[1],p[3]]]
+def p_chord_notes(p):
+    'chord : LPARAN notes RPARAN'
+    p[0] = [[NoteContainer(),p[2][0][1]]]
+    for note in reversed(p[2]):
+        p[0][0][0].add_note(note[0])
+
+def p_notes(p):
+    '''notes : note notes
+             | note'''
+    if len(p) == 2: # base case
+        p[0] = p[1]
     else:
-        p[0] = p[4]
-        p[0].append([p[1],p[3]])
+        p[0] = p[2]
+        p[0].append([p[1][0][0],p[1][0][1]])
+
+def p_note_pitch_duration(p):
+    'note : pitch DASH duration'
+    p[0] = [[p[1],p[3]]]
 
 def p_pitch_terminals(p):
     'pitch : LETTER DASH NUMBER'
